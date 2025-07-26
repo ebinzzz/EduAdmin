@@ -11,35 +11,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.0'
-        extensions: mbstring, bcmath, xml, ctype, fileinfo
-        coverage: none
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, xml, ctype, fileinfo
+          coverage: none
 
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+      # Option 1: If lock file is often broken in PRs/use composer update
+      #- name: Update dependencies
+      #  run: composer update --prefer-dist --no-progress --no-interaction
 
-    - name: Generate application key
-      run: php artisan key:generate
+      # Option 2: Standard practice (make sure lock file is correct in repo)
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Set directory permissions
-      run: chmod -R 777 storage bootstrap/cache
+      - name: Generate application key
+        run: php artisan key:generate
 
-    - name: Create SQLite database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
+      - name: Set directory permissions
+        run: chmod -R 777 storage bootstrap/cache
 
-    - name: Run tests
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan test
+      - name: Create SQLite database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Run tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test
