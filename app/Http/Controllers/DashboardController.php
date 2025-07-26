@@ -19,5 +19,5 @@ class DashboardController extends Controller
             return view('studentdashboard', compact('user'));
     }
 }
-
+    
 }
