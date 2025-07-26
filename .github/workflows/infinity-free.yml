@@ -1,4 +1,4 @@
-name: 🚀 Deploy to resturantsen.free.nf
+name: 🚀 Deploy to eduadmin.rf.gd
 
 on:
   workflow_dispatch: # Uncomment below to deploy on push instead
@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: 🎉 Deploy to resturantsen.free.nf
+    name: 🎉 Deploy to eduadmin.rf.gd
     runs-on: ubuntu-latest
 
     steps:
