@@ -1134,7 +1134,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                     </div>
-                    <div class="stat-number">89</div>
+                    <div class="stat-number">{{ $totalTeachers }}</div>
                     <div class="stat-label">Total Teachers</div>
                 </div>
 
@@ -1144,7 +1144,7 @@
                             <i class="fas fa-user-check"></i>
                         </div>
                     </div>
-                    <div class="stat-number">74</div>
+                    <div class="stat-number">{{ $activeTeachers }}</div>
                     <div class="stat-label">Active Teachers</div>
                 </div>
 
@@ -1204,18 +1204,16 @@
             <td>{{ $teacher->employee_id }}</td>
             <td>{{ $teacher->department }}</td>
             <td>{{ $teacher->phone }}</td>
-            <td>
-                <span style="color: green;">Active</span> {{-- You can enhance this with a column in DB --}}
+            <td>        
+                @if($teacher->status === 'Active')
+                    <span style="color: green;">Active</span>
+                @else
+                    <span style="color: red;">Inactive</span>
+                @endif
             </td>
             <td>{{ \Carbon\Carbon::parse($teacher->join_date)->format('d M Y') }}</td>
            <td class="action-buttons">
             <a href="{{route('teacher.edit', $teacher->id)}}">Edit</a>
-
-            <form action="{{-- route('teachers.destroy', $teacher->id) --}}" method="POST" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
-            </form>
         </td>
 
         </tr>
