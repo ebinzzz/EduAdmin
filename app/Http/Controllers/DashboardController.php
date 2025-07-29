@@ -29,8 +29,13 @@ class DashboardController extends Controller
         };
     }
 
-    public function adminDashboard()
+   public function adminDashboard()
     {
+        // Check if user is authenticated first
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+        
         $user = Auth::user();
         
         // Check if user has admin access

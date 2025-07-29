@@ -632,6 +632,20 @@
     </style>
 </head>
 <body>
+    @if(!Auth::check())
+    <script>
+        window.location.href = "{{ route('login') }}";
+    </script>
+    @php exit(); @endphp
+@endif
+
+@if(!in_array(Auth::user()->role ?? '', ['superadmin', 'admin']))
+    <script>
+        alert('Unauthorized access');
+        window.location.href = "{{ route('login') }}";
+    </script>
+    @php exit(); @endphp
+@endif
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -662,7 +676,7 @@
             <div class="nav-section">
                 <div class="nav-section-title">User Management</div>
                 <div class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{route('studentmanage')}}" class="nav-link">
                         <i class="fas fa-user-graduate"></i>
                         Students
                         <span class="badge">1,247</span>
@@ -695,8 +709,14 @@
                 <div class="nav-section-title">Academic</div>
                 <div class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="fas fa-school"></i>
+                        <i class="fas fa-class"></i>
                         Schools
+                    </a>
+                </div>
+                     <div class="nav-item">
+                    <a href="{{route('class-management.index')}}" class="nav-link">
+                        <i class="fas fa-school"></i>
+                        Classes
                     </a>
                 </div>
                 <div class="nav-item">
@@ -739,13 +759,25 @@
                         Reports
                     </a>
                 </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-question-circle"></i>
-                        Help & Support
-                    </a>
-                </div>
-            </div>
+            <div class="nav-item">
+    <a href="#" class="nav-link" id="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+    </a>
+</div>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<script>
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to logout?')) {
+        document.getElementById('logout-form').submit();
+    }
+});
+</script>
         </nav>
     </aside>
 
@@ -783,8 +815,8 @@
                 <div class="user-profile">
                     <div class="user-avatar">SA</div>
                     <div class="user-info">
-                        <h4>{{ ucfirst($user->role) }}</h4>
-                        <p>{{ ucfirst($user->email) }}</p>
+                         <h4>{{ Auth::user()->name ?? 'Super Admin' }}</h4>
+                        <p>{{ Auth::user()->email ?? 'admin@edumanage.com' }}</p>
                     </div>
                     <i class="fas fa-chevron-down"></i>
                 </div>
@@ -1159,7 +1191,7 @@
                     stat.textContent = newValue.toLocaleString();
                 }
             });
-        }
+        
 
         // Update stats every 30 seconds (for demo purposes)
         setInterval(updateStats, 30000);
@@ -1220,6 +1252,15 @@
             }
         `;
         document.head.appendChild(style);
+
+
+     
+function confirmLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        document.getElementById('logout-form').submit();
+    }
+}
+
     </script>
 </body>
 </html>

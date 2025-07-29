@@ -27,7 +27,7 @@ public function teachermanage()
     $inactiveTeachers = Teacher::where('status', 'Inactive')->count();
     $onLeaveTeachers = Teacher::where('status', 'On Leave')->count();
     
-    return view('teacher.Manage', compact(
+    return view('admin.teacher.Manage', compact(
         'teachers', 
         'totalTeachers', 
         'activeTeachers', 
@@ -38,7 +38,7 @@ public function teachermanage()
 
     public function addteacher()
     {
-        return view('teacher.Add');
+        return view('admin.teacher.Add');
     }
 
     public function store(Request $request)
@@ -73,21 +73,24 @@ public function teachermanage()
         ]);
 
         // ✅ Create teacher record (for detailed info)
-        $teacher = Teacher::create([
-            'user_id'        => $user->id, // Link to user table
-            'first_name'     => $validated['firstName'],
-            'last_name'      => $validated['lastName'],
-            'email'          => $validated['email'],
-            'phone'          => $validated['phone'],
-            'employee_id'    => $validated['employeeId'],
-            'password'       => $hashedPassword,
-            'department'     => $validated['department'],
-            'qualification'  => $validated['qualification'],
-            'experience'     => $validated['experience'] ?? 0,
-            'join_date'      => $validated['joinDate'],
-            'salary'         => $validated['salary'],
-            'address'        => $validated['address'],
-        ]);
+       $teacher = Teacher::create([
+    'user_id'        => $user->id,
+    'first_name'     => $validated['firstName'],
+    'last_name'      => $validated['lastName'],
+    'email'          => $validated['email'],
+    'phone'          => $validated['phone'],
+    'employee_id'    => $validated['employeeId'],
+    'password'       => $hashedPassword,
+    'department'     => $validated['department'],
+    'qualification'  => $validated['qualification'],
+    'experience'     => $validated['experience'] ?? 0,
+    'join_date'      => $validated['joinDate'],
+    'salary'         => $validated['salary'],
+    'address'        => $validated['address'],
+    'status'         => 'Active', // or whatever default you need
+    'is_active'      => 'yes',
+]);
+
 
         // ✅ Send credentials email if checkbox is checked
         if ($request->has('sendCredentials') && $request->sendCredentials) {
@@ -147,7 +150,7 @@ private function sendCredentialsEmail($user, $password, $userType = 'teacher')
     public function edit($id)
     {
         $teacher = Teacher::findOrFail($id);
-        return view('teacher.edit', compact('teacher'));
+        return view('admin.teacher.edit', compact('teacher'));
     }
 
     /**

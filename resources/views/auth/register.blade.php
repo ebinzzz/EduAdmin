@@ -641,7 +641,7 @@
 
             <form id="registrationForm" method="POST" action="{{route('register')}}" class="registration-form">
                 <!-- Role Selection -->
-               
+               @csrf
                 <!-- Name Field -->
                 <div class="form-group">
                     <label for="name">Full Name</label>
