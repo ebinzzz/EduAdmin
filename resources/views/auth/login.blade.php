@@ -142,8 +142,7 @@
             position: absolute;
             top: -28px;
             right: -10px;
-                        margin-top:35%;
-
+            margin-top:35%;
         }
 
         .flag {
@@ -257,6 +256,128 @@
             max-width: 450px;
             width: 100%;
             margin: 0 auto;
+        }
+
+        /* Role Selection Cards */
+        .role-selection {
+            margin-bottom: 40px;
+        }
+
+        .role-selection label {
+            display: block;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .role-card {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .role-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .role-card-content {
+            background: #f8f9fa;
+            border: 2px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 25px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .role-card:hover .role-card-content {
+            border-color: #3498db;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.2);
+        }
+
+        .role-card:hover .role-card-content::before {
+            opacity: 1;
+        }
+
+        .role-card input[type="radio"]:checked + .role-card-content,
+        .role-card.selected .role-card-content {
+            border-color: #3498db;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
+        }
+
+        .role-card input[type="radio"]:checked + .role-card-content .role-icon,
+        .role-card.selected .role-card-content .role-icon {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
+        }
+
+        .role-icon {
+            font-size: 32px;
+            color: #3498db;
+            margin-bottom: 12px;
+            width: 60px;
+            height: 60px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .role-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .role-description {
+            font-size: 12px;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
         }
 
         .form-group {
@@ -524,7 +645,7 @@
             }
             
             .brand-side {
-                display: none; /* Hide left branding interface on mobile */
+                display: none;
             }
             
             .form-side {
@@ -556,9 +677,24 @@
                 justify-content: center;
                 font-family: 'Font Awesome 6 Free';
                 font-weight: 900;
-                content: '\f19d'; /* graduation cap icon */
+                content: '\f19d';
                 color: white;
                 font-size: 24px;
+            }
+            
+            .role-cards {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .role-card-content {
+                padding: 20px 15px;
+            }
+            
+            .role-icon {
+                font-size: 28px;
+                width: 50px;
+                height: 50px;
             }
             
             .remember-forgot {
@@ -574,17 +710,17 @@
         }
 
         /* Animation for form elements */
-        .form-group {
+        .form-group, .role-selection {
             opacity: 0;
             transform: translateY(30px);
             animation: slideUp 0.8s ease forwards;
         }
 
-        .form-group:nth-child(1) { animation-delay: 0.1s; }
-        .form-group:nth-child(2) { animation-delay: 0.2s; }
-        .form-group:nth-child(3) { animation-delay: 0.3s; }
-        .form-group:nth-child(4) { animation-delay: 0.4s; }
-        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .role-selection { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.3s; }
+        .form-group:nth-child(5) { animation-delay: 0.4s; }
+        .form-group:nth-child(6) { animation-delay: 0.5s; }
 
         @keyframes slideUp {
             to {
@@ -630,7 +766,6 @@
                             <div class="window right"></div>
                             <div class="door"></div>
                         </div>
-                      
                     </div>
                 </div>
                 <h1><i class="fas fa-graduation-cap"></i> EduManage</h1>
@@ -681,10 +816,52 @@
             <form method="POST" action="{{route('login')}}" class="login-form">
                  @csrf 
 
+                <!-- Role Selection Cards -->
+                <!--<div class="role-selection">
+                    <label>Choose your login type</label>
+                    <div class="role-cards">
+                        <div class="role-card">
+                            <input type="radio" id="superadmin" name="role" value="superadmin" {{ old('role') == 'superadmin' ? 'checked' : '' }} required>
+                            <div class="role-card-content">
+                                <div class="role-icon">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="role-title">Super Administrator</div>
+                                <div class="role-description">System Admin Access</div>
+                            </div>
+                        </div>
+                        
+                        <div class="role-card">
+                            <input type="radio" id="teacher" name="role" value="teacher" {{ old('role') == 'teacher' ? 'checked' : '' }} required>
+                            <div class="role-card-content">
+                                <div class="role-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <div class="role-title">Teacher</div>
+                                <div class="role-description">Faculty Portal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="role-card">
+                            <input type="radio" id="student" name="role" value="student" {{ old('role') == 'student' ? 'selected' : '' }} required>
+                            <div class="role-card-content">
+                                <div class="role-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="role-title">Student</div>
+                                <div class="role-description">Student Dashboard</div>
+                            </div>
+                        </div>
+                    </div>
+                    @error('role')
+                        <div class="field-error">{{ $message }}</div>
+                    @enderror 
+                </div>-->
+
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required autofocus>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required value="{{ old('email') }}">
                         <i class="fas fa-envelope input-icon"></i>
                     </div>
                     @error('email')
@@ -699,9 +876,6 @@
                         <i class="fas fa-lock input-icon"></i>
                         <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
                     </div>
-                    <!-- @error('password')
-                        <div class="field-error">{{ $message }}</div>
-                    @enderror -->
                 </div>
 
                 <div class="remember-forgot">
@@ -761,6 +935,14 @@
             submitBtn.classList.add('loading');
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
         });
+
+       
+      
+
+        // Handle radio button changes
+
+        // Set initial selected state if there's a checked radio
+       
     </script>
 </body>
 </html>

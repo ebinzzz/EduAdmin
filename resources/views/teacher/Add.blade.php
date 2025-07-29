@@ -1036,7 +1036,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group full-width">
+                        <div class="form-group full-width"> 
                             <label class="form-label" for="qualifications">Qualifications</label>
                             <textarea class="form-textarea" id="qualification" name="qualification" rows="3" placeholder="Enter educational qualifications and certifications..."></textarea>
                         </div>
@@ -1045,13 +1045,10 @@
                     <!-- Additional Information Section -->
                     
 
-                        <div class="checkbox-group">
-                            <label class="custom-checkbox">
-                                <input type="checkbox" id="sendCredentials" name="sendCredentials" checked>
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="sendCredentials" class="form-label">Send Login Credentials</label>
-                            <div class="help-text">Send login credentials to the teacher's email address</div>
+                        <div class="row mb-3">
+                            <div class="col-md-6 offset-md-4">
+                                @include('components.send-credentials-checkbox', ['userType' => 'teacher'])
+                            </div>
                         </div>
                     </div>
 

@@ -517,6 +517,72 @@
             text-align: center;
         }
     }
+    
+<style>
+.alert {
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-left: 4px solid #28a745;
+    color: #155724;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left: 4px solid #ffc107;
+    color: #856404;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border-left: 4px solid #17a2b8;
+    color: #0c5460;
+}
+
+.alert-primary {
+    background: linear-gradient(135deg, #d6d8db 0%, #c6c8ca 100%);
+    border-left: 4px solid #007bff;
+    color: #004085;
+}
+
+.alert ul {
+    padding-left: 1.2rem;
+}
+
+.alert ul li {
+    margin-bottom: 0.25rem;
+}
+
+.alert .fas {
+    font-size: 1.1rem;
+}
+
+.btn-close {
+    font-size: 0.875rem;
+}
+
+/* Auto-hide messages after 5 seconds */
+.alert.auto-hide {
+    animation: slideOut 0.5s ease-in-out 5s forwards;
+}
+
+@keyframes slideOut {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); height: 0; margin: 0; padding: 0; }
+}
+</style>
+
 </style>
 @endsection
 
@@ -547,8 +613,8 @@
                 <i class="fas fa-chalkboard-teacher"></i>
             </div>
             <div class="info">
-                <h3>{{ $teacher->firstName ?? 'Sarah' }} {{ $teacher->lastName ?? 'Johnson' }}</h3>
-                <p>Employee ID: {{ $teacher->employeeId ?? 'TCH2024SJ001' }} • {{ $teacher->department ?? 'Mathematics' }} Department</p>
+                <h3>{{ $teacher->first_name}} {{ $teacher->last_name  }}</h3>
+                <p>Employee ID: {{ $teacher->employee_id  }} • {{ $teacher->department }} Department</p>
             </div>
         </div>
 
@@ -557,30 +623,106 @@
             Last updated: {{ $teacher->updated_at ? $teacher->updated_at->format('F j, Y \a\t g:i A') : 'November 15, 2024 at 2:30 PM' }}
         </div>
 
-        {{-- Success Message --}}
-        @if(session('success'))
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
-                {{ session('success') }}
-            </div>
-        @endif
+      {{-- Success Messages --}}
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Success!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
-        {{-- Error Messages --}}
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i>
-                <div>
-                    <strong>Please fix the following errors:</strong>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
+{{-- Error Messages --}}
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <strong>Error!</strong> {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
-        <form id="editTeacherForm" method="POST" action="{{-- route('teachers.update', $teacher->id ?? 1) --}}">
+{{-- Validation Errors --}}
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <div>
+            <strong>Please fix the following errors:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+{{-- Info Messages --}}
+@if(session('info'))
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Info:</strong> {{ session('info') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+{{-- Warning Messages --}}
+@if(session('warning'))
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Warning:</strong> {{ session('warning') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+{{-- Teacher Updated Special Message --}}
+@if(session('teacher_updated'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-user-check me-2"></i>
+        <strong>Profile Updated!</strong> 
+        The teacher profile has been successfully updated.
+        @if(session('email_sent'))
+            An email notification has been sent to the teacher.
+        @endif
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+{{-- Email Notification Status --}}
+@if(session('email_sent'))
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-envelope me-2"></i>
+        <strong>Email Sent:</strong> Notification email has been sent successfully.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if(session('email_failed'))
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-envelope-open-text me-2"></i>
+        <strong>Email Warning:</strong> Profile was updated successfully, but email notification could not be sent.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+{{-- Bulk Operation Messages --}}
+@if(session('bulk_success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-users me-2"></i>
+        <strong>Bulk Operation:</strong> {{ session('bulk_success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+{{-- Custom Status Messages --}}
+@if(session('status'))
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <i class="fas fa-bell me-2"></i>
+        <strong>Status:</strong> {{ session('status') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+            <form id="editTeacherForm" method="POST" action="{{ route('teacher.update', $teacher->id) }}">
             @csrf
             @method('PUT')
             
@@ -596,7 +738,7 @@
                         <label class="form-label required" for="firstName">First Name</label>
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
-                            <input type="text" class="form-input" id="firstName" name="firstName" value="{{ old('firstName', $teacher->firstName ?? 'Sarah') }}" required>
+                            <input type="text" class="form-input" id="firstName" name="firstName" value="{{ old('firstName', $teacher->first_name ?? 'Sarah') }}" required>
                         </div>
                     </div>
                     
@@ -604,7 +746,7 @@
                         <label class="form-label required" for="lastName">Last Name</label>
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
-                            <input type="text" class="form-input" id="lastName" name="lastName" value="{{ old('lastName', $teacher->lastName ?? 'Johnson') }}" required>
+                            <input type="text" class="form-input" id="lastName" name="lastName" value="{{ old('lastName', $teacher->last_name?? 'Johnson') }}" required>
                         </div>
                     </div>
                     
@@ -712,31 +854,44 @@
                 </h3>
                 
                 <div class="checkbox-group">
+                        <input type="hidden" name="accountActive" value="0">
+
                     <label class="custom-checkbox">
-                        <input type="checkbox" id="resetPassword" name="resetPassword" {{ old('resetPassword') ? 'checked' : '' }}>
+                        <input type="checkbox" id="resetPassword" name="resetPassword" value="1"{{ old('resetPassword') ? 'checked' : '' }}>
                         <span class="checkmark"></span>
                     </label>
                     <label for="resetPassword" class="form-label">Reset Password</label>
                     <div class="help-text">Generate a new password and send it to the teacher's email</div>
                 </div>
 
-                <div class="checkbox-group">
-                    <label class="custom-checkbox">
-                        <input type="checkbox" id="accountActive" name="accountActive" {{ old('accountActive', $teacher->accountActive ?? true) ? 'checked' : '' }}>
-                        <span class="checkmark"></span>
-                    </label>
-                    <label for="accountActive" class="form-label">Account Active</label>
-                    <div class="help-text">Allow the teacher to access their account</div>
-                </div>
+                <!-- Account Active -->
+<div class="checkbox-group">
+    <!-- Hidden fallback when unchecked -->
+    <input type="hidden" name="accountActive" value="0">
 
-                <div class="checkbox-group">
-                    <label class="custom-checkbox">
-                        <input type="checkbox" id="sendNotification" name="sendNotification" {{ old('sendNotification') ? 'checked' : 'checked' }}>
-                        <span class="checkmark"></span>
-                    </label>
-                    <label for="sendNotification" class="form-label">Send Update Notification</label>
-                    <div class="help-text">Notify the teacher about the changes made to their profile</div>
-                </div>
+    <label class="custom-checkbox">
+        <input type="checkbox" id="accountActive" name="accountActive" value="1"
+            {{ old('accountActive', $teacher->status ?? true) ? 'checked' : '' }}>
+        <span class="checkmark"></span>
+    </label>
+    <label for="accountActive" class="form-label">Account Active</label>
+    <div class="help-text">Allow the teacher to access their account</div>
+</div>
+
+<!-- Send Notification -->
+<div class="checkbox-group">
+    <!-- Hidden fallback when unchecked -->
+    <input type="hidden" name="sendNotification" value="0">
+
+    <label class="custom-checkbox">
+        <input type="checkbox" id="sendNotification" name="sendNotification" value="1"
+            {{ old('sendNotification', true) ? 'checked' : '' }}>
+        <span class="checkmark"></span>
+    </label>
+    <label for="sendNotification" class="form-label">Send Update Notification</label>
+    <div class="help-text">Notify the teacher about the changes made to their profile</div>
+</div>
+
             </div>
 
             <!-- Form Actions -->
@@ -763,20 +918,21 @@
     <div class="modal-content">
         <i class="fas fa-exclamation-triangle icon"></i>
         <h3>Delete Teacher</h3>
-        <p>Are you sure you want to delete {{ $teacher->firstName ?? 'Sarah' }} {{ $teacher->lastName ?? 'Johnson' }}? This action cannot be undone.</p>
+        <p>Are you sure you want to delete {{ $teacher->first_name ?? 'Sarah' }} {{ $teacher->last_name ?? 'Johnson' }}? This action cannot be undone.</p>
         <div class="modal-actions">
             <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">
                 <i class="fas fa-times"></i>
                 Cancel
             </button>
-            <form method="POST" action="{{-- route('teachers.destroy', $teacher->id ?? 1) --}}" style="display: inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger" id="deleteBtn">
-                    <i class="fas fa-trash"></i>
-                    Delete
-                </button>
-            </form>
+           <!-- Delete Form - Removed the onclick confirm -->
+        <form action="{{ route('teacher.destroy', $teacher->id) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash"></i>
+                Delete
+            </button>
+        </form>
         </div>
     </div>
 </div>
@@ -939,5 +1095,24 @@
             infoDisplay.textContent = `Employee ID: ${employeeId} • ${department} Department`;
         }
     }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-hide success messages after 5 seconds
+    const successAlerts = document.querySelectorAll('.alert-success, .alert-info');
+    successAlerts.forEach(function(alert) {
+        setTimeout(function() {
+            if (alert && alert.parentNode) {
+                alert.classList.add('auto-hide');
+                setTimeout(function() {
+                    if (alert && alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 500);
+            }
+        }, 5000);
+    });
+});
 </script>
 @endpush
