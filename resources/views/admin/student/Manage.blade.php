@@ -311,12 +311,12 @@ Home / User Management / Students
     }
 
     .action-buttons form button {
-        background-color: #e74c3c;
+        background-color: #00a11bff;
         color: white;
     }
 
     .action-buttons form button:hover {
-        background-color: #c0392b;
+        background-color: #9ce284ff;
     }
 
     /* Pagination */
@@ -385,6 +385,7 @@ Home / User Management / Students
             gap: 10px;
         }
     }
+   
 </style>
 @endsection
 
@@ -415,6 +416,12 @@ Home / User Management / Students
             <a href="{{ route('addstudent')}}" class="add-student-btn">
                 <i class="fas fa-plus"></i>
                 Add Student
+            </a>
+        </div>
+            <div class="action-right">
+            <a href="{{ route('index')}}" class="add-student-btn">
+                <i class="fas fa-eye"></i>
+                View Student
             </a>
         </div>
     </div>
@@ -477,7 +484,7 @@ Home / User Management / Students
                 </button>
             </div>
         </div>
-
+           
         <table class="students-table">
             <thead>
                 <tr>
@@ -507,7 +514,7 @@ Home / User Management / Students
                             </td>
                             <td>{{ $student->student_id }}</td>
                             <td>
-                                <span class="grade-tag">{{ $student->grade ?? 'Grade 10' }}</span>
+                                <span class="grade-tag">{{ $student->schoolClass->name ?? 'Grade 10' }}</span>
                             </td>
                             <td>{{ $student->parent_phone ?? $student->phone }}</td>
                             <td>
@@ -517,131 +524,12 @@ Home / User Management / Students
                             </td>
                             <td>{{ \Carbon\Carbon::parse($student->admission_date ?? $student->created_at)->format('d M Y') }}</td>
                             <td class="action-buttons">
-                                <a href="{{ route('student.edit', $student->id) }}">Edit</a>
-                                <form method="POST" action="{{ route('student.delete', $student->id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this student?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit">Delete</button>
-                                </form>
+                                <a href="{{ route('students.edit', $student->id) }}">Edit</a>
+                                     <a href="{{ route('bio', $student->id) }}" class="btn btn-view">View</a>
                             </td>
                         </tr>
                     @endforeach
-                @else
-                    <!-- Sample static data for demonstration -->
-                    <tr>
-                        <td>
-                            <div class="student-info">
-                                <div class="student-avatar">JS</div>
-                                <div class="student-details">
-                                    <h4>John Smith</h4>
-                                    <p>john.smith@email.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>STU001</td>
-                        <td><span class="grade-tag">Grade 10</span></td>
-                        <td>+1 (555) 123-4567</td>
-                        <td><span class="status-badge active">Active</span></td>
-                        <td>15 Jan 2024</td>
-                        <td class="action-buttons">
-                            <a href="#">Edit</a>
-                            <form style="display: inline;" onsubmit="return confirm('Are you sure?')">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="student-info">
-                                <div class="student-avatar">EJ</div>
-                                <div class="student-details">
-                                    <h4>Emily Johnson</h4>
-                                    <p>emily.johnson@email.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>STU002</td>
-                        <td><span class="grade-tag">Grade 11</span></td>
-                        <td>+1 (555) 234-5678</td>
-                        <td><span class="status-badge active">Active</span></td>
-                        <td>20 Jan 2024</td>
-                        <td class="action-buttons">
-                            <a href="#">Edit</a>
-                            <form style="display: inline;" onsubmit="return confirm('Are you sure?')">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="student-info">
-                                <div class="student-avatar">MB</div>
-                                <div class="student-details">
-                                    <h4>Michael Brown</h4>
-                                    <p>michael.brown@email.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>STU003</td>
-                        <td><span class="grade-tag">Grade 9</span></td>
-                        <td>+1 (555) 345-6789</td>
-                        <td><span class="status-badge suspended">Suspended</span></td>
-                        <td>10 Feb 2024</td>
-                        <td class="action-buttons">
-                            <a href="#">Edit</a>
-                            <form style="display: inline;" onsubmit="return confirm('Are you sure?')">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="student-info">
-                                <div class="student-avatar">SD</div>
-                                <div class="student-details">
-                                    <h4>Sarah Davis</h4>
-                                    <p>sarah.davis@email.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>STU004</td>
-                        <td><span class="grade-tag">Grade 12</span></td>
-                        <td>+1 (555) 456-7890</td>
-                        <td><span class="status-badge active">Active</span></td>
-                        <td>25 Jan 2024</td>
-                        <td class="action-buttons">
-                            <a href="#">Edit</a>
-                            <form style="display: inline;" onsubmit="return confirm('Are you sure?')">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="student-info">
-                                <div class="student-avatar">DW</div>
-                                <div class="student-details">
-                                    <h4>David Wilson</h4>
-                                    <p>david.wilson@email.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>STU005</td>
-                        <td><span class="grade-tag">Grade 10</span></td>
-                        <td>+1 (555) 567-8901</td>
-                        <td><span class="status-badge inactive">Inactive</span></td>
-                        <td>05 Mar 2024</td>
-                        <td class="action-buttons">
-                            <a href="#">Edit</a>
-                            <form style="display: inline;" onsubmit="return confirm('Are you sure?')">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+       
                 @endif
             </tbody>
         </table>

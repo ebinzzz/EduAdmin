@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'EduManage')</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -399,8 +400,8 @@
                     </a>
                 </div>
                  <div class="nav-item">
-                    <a href="" class="nav-link ">
-                        <i class="fas fa-class"></i>
+                         <a href="{{route('class-management.index')}}" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher"></i>
                         Classes
                     </a>
                 </div>

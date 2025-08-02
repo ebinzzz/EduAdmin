@@ -13,25 +13,48 @@
         border-radius: 15px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         overflow: hidden;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     .form-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
         color: white;
-        padding: 25px 30px;
-        margin: 0;
+        padding: 20px 30px; /* Reduced from 30px */
+        text-align: center;
+        position: relative;
     }
 
-    .form-header h4 {
-        margin: 0;
-        font-weight: 600;
-        font-size: 24px;
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,100 1000,0 1000,100"/></svg>');
+        background-size: cover;
+    }
+
+    .form-header h1 {
+        font-size: 24px; /* Reduced from 28px */
+        font-weight: 700;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 2;
     }
 
     .form-header p {
-        margin: 5px 0 0 0;
+        font-size: 14px; /* Reduced from 16px */
         opacity: 0.9;
-        font-size: 14px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-header .icon {
+        font-size: 36px; /* Reduced from 48px */
+        margin-bottom: 12px;
+        opacity: 0.8;
     }
 
     .form-body {
@@ -40,23 +63,6 @@
 
     .form-section {
         margin-bottom: 35px;
-        display: none;
-    }
-
-    .form-section.active {
-        display: block;
-        animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
     }
 
     .section-title {
@@ -109,7 +115,7 @@
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
-    .form-control:invalid {
+    .form-control.is-invalid {
         border-color: #ef4444;
     }
 
@@ -196,7 +202,7 @@
     .form-actions {
         display: flex;
         gap: 15px;
-        justify-content: space-between;
+        justify-content: center;
         padding-top: 20px;
         border-top: 2px solid #e5e7eb;
         margin-top: 30px;
@@ -237,15 +243,15 @@
         transform: translateY(-2px);
     }
 
-    .btn-outline {
-        background: transparent;
-        color: #6b7280;
-        border: 2px solid #d1d5db;
+    .btn-info {
+        background: #06b6d4;
+        color: white;
     }
 
-    .btn-outline:hover {
-        background: #f9fafb;
-        border-color: #9ca3af;
+    .btn-info:hover {
+        background: #0891b2;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
     }
 
     .alert {
@@ -286,92 +292,179 @@
         transform: translateY(-50%);
         color: #9ca3af;
         font-size: 16px;
+        z-index: 1;
     }
 
     .input-group .form-control {
         padding-left: 45px;
     }
 
-    .progress-bar {
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
         width: 100%;
-        height: 6px;
-        background: #e5e7eb;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-bottom: 30px;
-    }
-
-    .progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, #667eea, #764ba2);
-        width: 25%;
-        transition: width 0.5s ease;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        animation: fadeIn 0.3s ease-out;
     }
 
-    .form-steps {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 30px;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .step {
+    .modal.show {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 12px 20px;
-        border-radius: 25px;
-        background: #f3f4f6;
-        color: #6b7280;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
+        justify-content: center;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { 
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+        to { 
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 900px;
+        max-height: 90vh;
+        overflow-y: auto;
         position: relative;
+        animation: slideIn 0.3s ease-out;
     }
 
-    .step.active {
-        background: #667eea;
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        transform: scale(1.05);
-    }
-
-    .step.completed {
-        background: #10b981;
-        color: white;
-    }
-
-    .step::after {
-        content: '';
-        position: absolute;
-        right: -25px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 20px;
-        height: 2px;
-        background: #d1d5db;
-        z-index: -1;
-    }
-
-    .step:last-child::after {
-        display: none;
-    }
-
-    .step-navigation {
+        padding: 20px 30px;
+        border-radius: 15px 15px 0 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    .step-nav-left {
+    .modal-header h5 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .close {
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        background: none;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+
+    .close:hover {
+        opacity: 1;
+    }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .preview-section {
+        margin-bottom: 30px;
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        border-left: 4px solid #667eea;
+    }
+
+    .preview-section h6 {
+        color: #667eea;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 16px;
         display: flex;
+        align-items: center;
         gap: 10px;
     }
 
-    .step-nav-right {
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .preview-item {
         display: flex;
-        gap: 10px;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .preview-item strong {
+        color: #374151;
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .preview-item span {
+        color: #1f2937;
+        font-size: 14px;
+        padding: 8px 12px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .modal-footer {
+        padding: 20px 30px;
+        border-top: 2px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        border-radius: 0 0 15px 15px;
+        background: #f9fafb;
+    }
+
+    .student-photo-preview {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .student-photo-preview img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #667eea;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .photo-placeholder-small {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        color: #9ca3af;
+        border: 2px dashed #d1d5db;
     }
 
     @media (max-width: 768px) {
@@ -392,71 +485,145 @@
             justify-content: center;
         }
 
-        .step-navigation {
-            flex-direction: column;
-            gap: 15px;
+        .modal-content {
+            width: 95%;
+            margin: 10px;
         }
 
-        .step-nav-left,
-        .step-nav-right {
-            width: 100%;
-            justify-content: center;
+        .modal-footer {
+            flex-direction: column;
+        }
+
+        .preview-grid {
+            grid-template-columns: 1fr;
         }
     }
+    
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px; /* Reduced from 30px */
+        font-size: 13px;
+        color: #718096;
+    }
+
+    .breadcrumb a {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #2980b9;
+    }
+
+    .breadcrumb i {
+        font-size: 11px;
+    }
+     /* Container for messages */
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 15px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Success */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Error */
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Validation warning */
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* Close button */
+.alert .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: inherit;
+    cursor: pointer;
+}
 </style>
 @endsection
 
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-            <!-- Progress Steps -->
-            <div class="form-steps">
-                <div class="step active" data-step="1">
-                    <i class="fas fa-user"></i>
-                    <span>Basic Info</span>
-                </div>
-                <div class="step" data-step="2">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>Academic</span>
-                </div>
-                <div class="step" data-step="3">
-                    <i class="fas fa-users"></i>
-                    <span>Guardian</span>
-                </div>
-                <div class="step" data-step="4">
-                    <i class="fas fa-check"></i>
-                    <span>Review</span>
-                </div>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-
-            <!-- Success/Error Messages -->
-            <div class="alert alert-success" id="successAlert" style="display: none;">
-                <i class="fas fa-check-circle"></i>
-                <span id="successMessage"></span>
-            </div>
-
-            <div class="alert alert-error" id="errorAlert" style="display: none;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span id="errorMessage">Please correct the errors below.</span>
-            </div>
-
+        <div class="col-12">
             <!-- Main Form -->
             <div class="form-container">
-                <div class="form-header">
-                    <h4><i class="fas fa-user-plus"></i> Add New Student</h4>
-                    <p>Enter student information to create a new account</p>
-                </div>
+                 @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-warning">
+        <strong>Whoops!</strong> Please fix the following:
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
+
+
+                 <div class="form-header">
+                        <div class="icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h4></i> Add New Student</h4>
+                        <p>Enter student information to create a new account</p>
+                 </div>
+
+                <div class="breadcrumb">
+            <a href="{{route('dashboard')}}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="{{route('studentmanage')}}">Students</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Add Studentsr</span>
+        </div>
 
                 <div class="form-body">
-                    <form action="#" method="POST" enctype="multipart/form-data" id="addStudentForm">
-                        <!-- Step 1: Basic Information -->
-                        <div class="form-section active" id="step-1">
+                    <form action="{{ route('create.student') }}" method="POST" enctype="multipart/form-data" >
+                        @csrf
+                        
+                        <!-- Basic Information -->
+                        <div class="form-section">
                             <h5 class="section-title">
                                 <i class="fas fa-user"></i>
                                 Basic Information
@@ -564,8 +731,8 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Academic Information -->
-                        <div class="form-section" id="step-2">
+                        <!-- Academic Information -->
+                        <div class="form-section">
                             <h5 class="section-title">
                                 <i class="fas fa-graduation-cap"></i>
                                 Academic Information
@@ -584,12 +751,14 @@
                                 <div class="form-group">
                                     <label class="form-label">Class <span class="required">*</span></label>
                                     <select class="form-control form-select" name="class_id" required>
-                                        <option value="">Select Class</option>
-                                        <option value="1">Class 1A</option>
-                                        <option value="2">Class 2A</option>
-                                        <option value="3">Class 3A</option>
-                                        <option value="4">Class 4A</option>
-                                        <option value="5">Class 5A</option>
+                                         <option value="">
+                                                       Select Class
+                                                    </option>
+                                        @foreach($classes as $class)
+                                                    <option value="{{ $class->id }}">
+                                                        Class {{ $class->name }}{{ $class->section ? ' - ' . $class->section : '' }}
+                                                    </option>
+                                                @endforeach
                                     </select>
                                 </div>
 
@@ -632,8 +801,8 @@
                             </div>
                         </div>
 
-                        <!-- Step 3: Guardian Information -->
-                        <div class="form-section" id="step-3">
+                        <!-- Guardian Information -->
+                        <div class="form-section">
                             <h5 class="section-title">
                                 <i class="fas fa-users"></i>
                                 Guardian Information
@@ -690,18 +859,9 @@
                             </div>
                         </div>
 
-                        <!-- Step 4: Review and Account Settings -->
-                        <div class="form-section" id="step-4">
+                        <!-- Account Settings -->
+                        <div class="form-section">
                             <h5 class="section-title">
-                                <i class="fas fa-eye"></i>
-                                Review Information
-                            </h5>
-
-                            <div id="reviewContent">
-                                <!-- Review content will be populated by JavaScript -->
-                            </div>
-
-                            <h5 class="section-title" style="margin-top: 35px;">
                                 <i class="fas fa-key"></i>
                                 Account Settings
                             </h5>
@@ -735,54 +895,33 @@
                         </div>
 
                         <!-- Form Actions -->
-                        <div class="form-actions">
-                            <div class="step-nav-left">
-                                <button type="button" class="btn btn-outline" id="prevBtn" onclick="previousStep()" style="display: none;">
-                                    <i class="fas fa-arrow-left"></i>
-                                    Previous
-                                </button>
-                            </div>
-                            
-                            <div class="step-nav-right">
-                                <button type="button" class="btn btn-secondary" onclick="saveDraft()">
-                                    <i class="fas fa-save"></i>
-                                    Save Draft
-                                </button>
-                                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
-                                    Next
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                                <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">
-                                    <i class="fas fa-user-plus"></i>
-                                    Add Student
-                                </button>
-                            </div>
-                        </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="fas fa-eye"></i>
+                                        Submit Form
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-undo"></i>
+                                        Reset Form
+                                    </button>
+                                </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
+
 <script>
-   let currentStep = 1;
-const totalSteps = 4;
-
 // Auto-generate student ID based on name and DOB
-// Replace your existing generateStudentID function and event listeners with:
-
 function generateStudentID() {
     const firstNameElement = document.getElementById('first_name');
     const lastNameElement = document.getElementById('last_name');
     const dobElement = document.getElementById('date_of_birth');
     const studentIdElement = document.getElementById('student_id');
 
-    // Check if elements exist
     if (!firstNameElement || !lastNameElement || !dobElement || !studentIdElement) {
-        console.error('Required elements not found');
         return;
     }
 
@@ -791,27 +930,275 @@ function generateStudentID() {
     const dob = dobElement.value;
 
     if (firstName && lastName && dob) {
-        const firstInitial = firstName.charAt(0).toUpperCase();
-        const lastInitial = lastName.charAt(0).toUpperCase();
-        const dobDate = new Date(dob);
-        const year = dobDate.getFullYear().toString().slice(-2);
-        const month = (dobDate.getMonth() + 1).toString().padStart(2, '0');
-        const day = dobDate.getDate().toString().padStart(2, '0');
-        
-        const randomNum = Math.floor(Math.random() * 900) + 100;
-        const studentId = `${firstInitial}${lastInitial}${year}${month}${day}${randomNum}`;
-        
-        studentIdElement.value = studentId;
+        try {
+            const firstInitial = firstName.charAt(0).toUpperCase();
+            const lastInitial = lastName.charAt(0).toUpperCase();
+            const dobDate = new Date(dob);
+            
+            if (isNaN(dobDate.getTime())) {
+                return;
+            }
+            
+            const year = dobDate.getFullYear().toString().slice(-2);
+            const month = (dobDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = dobDate.getDate().toString().padStart(2, '0');
+            
+            const randomNum = Math.floor(Math.random() * 900) + 100;
+            const studentId = `${firstInitial}${lastInitial}${year}${month}${day}${randomNum}`;
+            
+            studentIdElement.value = studentId;
+        } catch (error) {
+            console.log('Error generating student ID:', error);
+        }
     }
 }
 
-// Update your DOMContentLoaded event listener:
+// Enhanced photo preview with validation
+function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        if (!validateFileUpload(file)) {
+            input.value = ''; // Clear the input
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.querySelector('.photo-preview');
+            if (preview) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Student Photo">`;
+                preview.classList.add('has-image');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Validate file upload
+function validateFileUpload(file) {
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    
+    if (file.size > maxSize) {
+        showAlert('error', 'File size must be less than 2MB');
+        return false;
+    }
+    
+    if (!allowedTypes.includes(file.type)) {
+        showAlert('error', 'Only JPG and PNG files are allowed');
+        return false;
+    }
+    
+    return true;
+}
+
+// Submit form to preview page
+
+// Form validation function
+function validateForm() {
+    const form = document.getElementById('addStudentForm');
+    const requiredFields = form.querySelectorAll('[required]');
+    let isValid = true;
+    let firstInvalidField = null;
+
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            if (!firstInvalidField) {
+                firstInvalidField = field;
+            }
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+
+    // Validate password confirmation
+    const password = document.querySelector('input[name="password"]');
+    const confirmPassword = document.querySelector('input[name="password_confirmation"]');
+    
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+        confirmPassword.classList.add('is-invalid');
+        showAlert('error', 'Passwords do not match!');
+        isValid = false;
+    }
+
+    // Validate email format
+    const emailField = document.querySelector('input[name="email"]');
+    if (emailField && emailField.value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailField.value)) {
+            emailField.classList.add('is-invalid');
+            showAlert('error', 'Please enter a valid email address!');
+            isValid = false;
+        }
+    }
+
+    // Validate student ID uniqueness (this would typically be done server-side)
+    const studentIdField = document.getElementById('student_id');
+    if (studentIdField && !studentIdField.value.trim()) {
+        studentIdField.classList.add('is-invalid');
+        showAlert('error', 'Student ID is required!');
+        isValid = false;
+    }
+
+    // Validate roll number is positive
+    const rollNumberField = document.querySelector('input[name="roll_number"]');
+    if (rollNumberField && rollNumberField.value && parseInt(rollNumberField.value) <= 0) {
+        rollNumberField.classList.add('is-invalid');
+        showAlert('error', 'Roll number must be a positive number!');
+        isValid = false;
+    }
+
+    // Validate date of birth (not in future)
+    const dobField = document.querySelector('input[name="date_of_birth"]');
+    if (dobField && dobField.value) {
+        const dobDate = new Date(dobField.value);
+        const today = new Date();
+        if (dobDate >= today) {
+            dobField.classList.add('is-invalid');
+            showAlert('error', 'Date of birth cannot be in the future!');
+            isValid = false;
+        }
+    }
+
+    // Validate admission date (not in future)
+    const admissionField = document.querySelector('input[name="admission_date"]');
+    if (admissionField && admissionField.value) {
+        const admissionDate = new Date(admissionField.value);
+        const today = new Date();
+        today.setHours(23, 59, 59, 999); // Allow today
+        if (admissionDate > today) {
+            admissionField.classList.add('is-invalid');
+            showAlert('error', 'Admission date cannot be in the future!');
+            isValid = false;
+        }
+    }
+
+    if (!isValid && firstInvalidField) {
+        firstInvalidField.focus();
+        firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Restore button state
+        const previewButton = document.querySelector('.btn-info');
+        if (previewButton) {
+            previewButton.disabled = false;
+            previewButton.innerHTML = '<i class="fas fa-eye"></i> Preview & Confirm';
+        }
+    }
+
+    return isValid;
+}
+
+// Show alert messages
+function showAlert(type, message) {
+    const alertId = type === 'success' ? 'successAlert' : 'errorAlert';
+    const messageId = type === 'success' ? 'successMessage' : 'errorMessage';
+    
+    const alertElement = document.getElementById(alertId);
+    const messageElement = document.getElementById(messageId);
+    
+    if (alertElement && messageElement) {
+        messageElement.textContent = message;
+        alertElement.style.display = 'flex';
+        
+        // Hide other alert types
+        const otherAlertId = type === 'success' ? 'errorAlert' : 'successAlert';
+        const otherAlert = document.getElementById(otherAlertId);
+        if (otherAlert) {
+            otherAlert.style.display = 'none';
+        }
+        
+        // Auto-hide success messages after 5 seconds
+        if (type === 'success') {
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Scroll to top to show alert
+        alertElement.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// Auto-format phone numbers
+function formatPhoneNumber(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value.length >= 10) {
+        value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    }
+    input.value = value;
+}
+
+// Real-time validation feedback
+function setupRealTimeValidation() {
+    // Email validation
+    const emailField = document.querySelector('input[name="email"]');
+    if (emailField) {
+        emailField.addEventListener('blur', function() {
+            if (this.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(this.value)) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                }
+            }
+        });
+    }
+
+    // Password strength indicator
+    const passwordField = document.querySelector('input[name="password"]');
+    if (passwordField) {
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            this.classList.remove('is-invalid', 'is-valid');
+            if (password.length > 0) {
+                if (strength >= 3) {
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.add('is-invalid');
+                }
+            }
+        });
+    }
+
+    // Required field validation
+    const requiredFields = document.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            }
+        });
+    });
+}
+
+// Initialize all functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Set default admission date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.querySelector('input[name="admission_date"]').value = today;
+    const admissionDateField = document.querySelector('input[name="admission_date"]');
+    if (admissionDateField) {
+        const today = new Date().toISOString().split('T')[0];
+        admissionDateField.value = today;
+    }
     
-    // Setup Student ID generation with a small delay
+    // Setup Student ID generation with a small delay to ensure elements are loaded
     setTimeout(() => {
         const firstNameInput = document.getElementById('first_name');
         const lastNameInput = document.getElementById('last_name');
@@ -821,574 +1208,77 @@ document.addEventListener('DOMContentLoaded', function() {
             firstNameInput.addEventListener('input', generateStudentID);
             lastNameInput.addEventListener('input', generateStudentID);
             dobInput.addEventListener('change', generateStudentID);
-            console.log('Student ID generation setup complete');
         }
-    }, 100);
-    
-    // Check for draft data
-    if (localStorage.getItem('studentDraft')) {
-        if (confirm('A draft was found. Would you like to load it?')) {
-            loadDraft();
-        }
-    }
-    
-    // Initialize first step
-    showStep(1);
-});
-
-// Photo preview functionality
-function previewPhoto(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.querySelector('.photo-preview');
-            preview.innerHTML = `<img src="${e.target.result}" alt="Student Photo">`;
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Step navigation functions
-function updateProgressBar() {
-    const progress = (currentStep / totalSteps) * 100;
-    document.getElementById('progressFill').style.width = progress + '%';
-}
-
-function updateStepIndicators() {
-    const steps = document.querySelectorAll('.step');
-    steps.forEach((step, index) => {
-        const stepNumber = index + 1;
-        step.classList.remove('active', 'completed');
         
-        if (stepNumber < currentStep) {
-            step.classList.add('completed');
-        } else if (stepNumber === currentStep) {
-            step.classList.add('active');
-        }
-    });
-}
-
-function showStep(stepNumber) {
-    // Hide all sections
-    document.querySelectorAll('.form-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    // Show current section
-    document.getElementById(`step-${stepNumber}`).classList.add('active');
-    
-    // Update navigation buttons
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    
-    if (stepNumber === 1) {
-        prevBtn.style.display = 'none';
-    } else {
-        prevBtn.style.display = 'inline-flex';
-    }
-    
-    if (stepNumber === totalSteps) {
-        nextBtn.style.display = 'none';
-        submitBtn.style.display = 'inline-flex';
-    } else {
-        nextBtn.style.display = 'inline-flex';
-        submitBtn.style.display = 'none';
-    }
-    
-    // Update progress and indicators
-    updateProgressBar();
-    updateStepIndicators();
-    
-    // If step 4, populate review content
-    if (stepNumber === 4) {
-        populateReviewContent();
-    }
-}
-
-function validateCurrentStep() {
-    const currentSection = document.getElementById(`step-${currentStep}`);
-    const requiredFields = currentSection.querySelectorAll('[required]');
-    let isValid = true;
-    
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            field.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            field.classList.remove('is-invalid');
-        }
-    });
-    
-    // Additional validation for step 4 (password confirmation)
-    if (currentStep === 4) {
-        const password = document.querySelector('input[name="password"]').value;
-        const confirmPassword = document.querySelector('input[name="password_confirmation"]').value;
-        
-        if (password !== confirmPassword) {
-            document.querySelector('input[name="password_confirmation"]').classList.add('is-invalid');
-            showAlert('error', 'Passwords do not match!');
-            isValid = false;
-        }
-    }
-    
-    if (!isValid) {
-        showAlert('error', 'Please fill in all required fields correctly.');
-    }
-    
-    return isValid;
-}
-
-function nextStep() {
-    if (validateCurrentStep() && currentStep < totalSteps) {
-        currentStep++;
-        showStep(currentStep);
-        hideAlerts();
-    }
-}
-
-function previousStep() {
-    if (currentStep > 1) {
-        currentStep--;
-        showStep(currentStep);
-        hideAlerts();
-    }
-}
-
-function populateReviewContent() {
-    const formData = new FormData(document.getElementById('addStudentForm'));
-    const reviewContent = document.getElementById('reviewContent');
-    
-    const basicInfo = {
-        'First Name': formData.get('first_name'),
-        'Last Name': formData.get('last_name'),
-        'Email': formData.get('email'),
-        'Phone': formData.get('phone') || 'Not provided',
-        'Date of Birth': formData.get('date_of_birth'),
-        'Gender': formData.get('gender'),
-        'Blood Group': formData.get('blood_group') || 'Not provided',
-        'Address': formData.get('address') || 'Not provided'
-    };
-    
-    const academicInfo = {
-        'Student ID': formData.get('student_id'),
-        'Class': getSelectText('class_id'),
-        'Roll Number': formData.get('roll_number'),
-        'Admission Date': formData.get('admission_date'),
-        'Academic Year': formData.get('academic_year'),
-        'Status': formData.get('status')
-    };
-    
-    const guardianInfo = {
-        'Guardian Name': formData.get('guardian_name'),
-        'Relationship': formData.get('guardian_relationship'),
-        'Guardian Phone': formData.get('guardian_phone'),
-        'Guardian Email': formData.get('guardian_email') || 'Not provided',
-        'Guardian Occupation': formData.get('guardian_occupation') || 'Not provided'
-    };
-    
-    let reviewHTML = `
-        <div class="review-section">
-            <h6 style="color: #667eea; font-weight: 600; margin-bottom: 15px;">
-                <i class="fas fa-user"></i> Basic Information
-            </h6>
-            <div class="review-grid">
-    `;
-    
-    Object.entries(basicInfo).forEach(([key, value]) => {
-        reviewHTML += `
-            <div class="review-item">
-                <strong>${key}:</strong> <span>${value || 'Not provided'}</span>
-            </div>
-        `;
-    });
-    
-    reviewHTML += `
-            </div>
-        </div>
-        
-        <div class="review-section">
-            <h6 style="color: #667eea; font-weight: 600; margin-bottom: 15px;">
-                <i class="fas fa-graduation-cap"></i> Academic Information
-            </h6>
-            <div class="review-grid">
-    `;
-    
-    Object.entries(academicInfo).forEach(([key, value]) => {
-        reviewHTML += `
-            <div class="review-item">
-                <strong>${key}:</strong> <span>${value || 'Not provided'}</span>
-            </div>
-        `;
-    });
-    
-    reviewHTML += `
-            </div>
-        </div>
-        
-        <div class="review-section">
-            <h6 style="color: #667eea; font-weight: 600; margin-bottom: 15px;">
-                <i class="fas fa-users"></i> Guardian Information
-            </h6>
-            <div class="review-grid">
-    `;
-    
-    Object.entries(guardianInfo).forEach(([key, value]) => {
-        reviewHTML += `
-            <div class="review-item">
-                <strong>${key}:</strong> <span>${value || 'Not provided'}</span>
-            </div>
-        `;
-    });
-    
-    reviewHTML += `
-            </div>
-        </div>
-    `;
-    
-    reviewContent.innerHTML = reviewHTML;
-}
-
-function getSelectText(selectName) {
-    const select = document.querySelector(`select[name="${selectName}"]`);
-    return select.options[select.selectedIndex]?.text || '';
-}
-
-function showAlert(type, message) {
-    hideAlerts();
-    const alertElement = document.getElementById(type === 'success' ? 'successAlert' : 'errorAlert');
-    const messageElement = document.getElementById(type === 'success' ? 'successMessage' : 'errorMessage');
-    
-    messageElement.textContent = message;
-    alertElement.style.display = 'flex';
-    
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        hideAlerts();
-    }, 5000);
-}
-
-function hideAlerts() {
-    document.getElementById('successAlert').style.display = 'none';
-    document.getElementById('errorAlert').style.display = 'none';
-}
-
-function saveDraft() {
-    const formData = new FormData(document.getElementById('addStudentForm'));
-    
-    // Convert FormData to JSON
-    const draftData = {};
-    for (let [key, value] of formData.entries()) {
-        draftData[key] = value;
-    }
-    
-    // Save to localStorage (in a real application, this would be sent to the server)
-    localStorage.setItem('studentDraft', JSON.stringify(draftData));
-    showAlert('success', 'Draft saved successfully!');
-}
-
-function loadDraft() {
-    const draftData = localStorage.getItem('studentDraft');
-    if (draftData) {
-        const data = JSON.parse(draftData);
-        const form = document.getElementById('addStudentForm');
-        
-        Object.entries(data).forEach(([key, value]) => {
-            const field = form.querySelector(`[name="${key}"]`);
-            if (field) {
-                if (field.type === 'checkbox') {
-                    field.checked = value === '1';
-                } else {
-                    field.value = value;
-                }
-            }
+        // Setup phone number formatting
+        const phoneInputs = document.querySelectorAll('input[type="tel"]');
+        phoneInputs.forEach(input => {
+            input.addEventListener('input', () => formatPhoneNumber(input));
         });
         
-        // Regenerate student ID if needed
-        generateStudentID();
-        showAlert('success', 'Draft loaded successfully!');
-    }
-}
-
-// Step click navigation
-document.querySelectorAll('.step').forEach(step => {
-    step.addEventListener('click', function() {
-        const stepNumber = parseInt(this.dataset.step);
-        if (stepNumber < currentStep || (stepNumber === currentStep + 1 && validateCurrentStep())) {
-            currentStep = stepNumber;
-            showStep(currentStep);
+        // Setup password confirmation validation
+        const confirmPasswordField = document.querySelector('input[name="password_confirmation"]');
+        const passwordField = document.querySelector('input[name="password"]');
+        
+        if (confirmPasswordField && passwordField) {
+            confirmPasswordField.addEventListener('input', function() {
+                if (this.value && passwordField.value && this.value !== passwordField.value) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
         }
-    });
-});
-
-// Form submission
-document.getElementById('addStudentForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+        
+        // Setup real-time validation
+        setupRealTimeValidation();
+        
+    }, 100);
     
-    if (!validateCurrentStep()) {
-        return;
+    // Setup reset button functionality
+    const resetButton = document.querySelector('button[type="reset"]');
+    if (resetButton) {
+        resetButton.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Clear photo preview
+            const photoPreview = document.querySelector('.photo-preview');
+            if (photoPreview) {
+                photoPreview.innerHTML = `
+                    <div class="photo-placeholder">
+                        <i class="fas fa-camera"></i>
+                        <small>Click to upload</small>
+                    </div>
+                `;
+            }
+            
+            // Clear all validation states
+            const invalidFields = document.querySelectorAll('.is-invalid, .is-valid');
+            invalidFields.forEach(field => {
+                field.classList.remove('is-invalid', 'is-valid');
+            });
+            
+            // Clear alerts
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => alert.style.display = 'none');
+        });
     }
     
-    // Show loading state
-    const submitBtn = document.getElementById('submitBtn');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Student...';
-    submitBtn.disabled = true;
-    
-    // Simulate form submission (replace with actual AJAX call)
+    // Auto-hide alerts after page load
     setTimeout(() => {
-        // Clear draft from localStorage
-        localStorage.removeItem('studentDraft');
-        
-        showAlert('success', 'Student added successfully! Redirecting...');
-        
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-        // Redirect after success (uncomment in real application)
-        // setTimeout(() => {
-        //     window.location.href = '/students';
-        // }, 2000);
-    }, 2000);
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.style.display !== 'none') {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        });
+    }, 100);
 });
-
-// Load draft on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Set default admission date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.querySelector('input[name="admission_date"]').value = today;
     
-    // Check for draft data
-    if (localStorage.getItem('studentDraft')) {
-        if (confirm('A draft was found. Would you like to load it?')) {
-            loadDraft();
-        }
-    }
-    
-    // Initialize first step
-    showStep(1);
-});
-
-// Add CSS for review section (inject into head)
-const reviewStyles = `
-<style>
-/* Add these additional CSS styles to your @section('styles') in the Blade template */
-
-/* Review Section Styles - Already included via JavaScript, but add here for consistency */
-.review-section {
-    margin-bottom: 25px;
-    padding: 20px;
-    background: #f8fafc;
-    border-radius: 10px;
-    border-left: 4px solid #667eea;
-}
-
-.review-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-}
-
-.review-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.review-item strong {
-    color: #374151;
-    font-size: 13px;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.review-item span {
-    color: #1f2937;
-    font-size: 14px;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
-}
-
-/* Invalid form field styles */
-.form-control.is-invalid {
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
-    background: #fef2f2 !important;
-}
-
-.form-control.is-invalid:focus {
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
-}
-
-/* Loading button animation */
-.btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-.btn .fa-spinner {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Enhanced step indicators */
-.step.completed i {
-    display: none;
-}
-
-.step.completed::before {
-    content: '\f00c';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    font-size: 14px;
-}
-
-/* Step hover effects */
-.step:not(.active):not(.completed):hover {
-    background: #e5e7eb;
-    transform: translateY(-2px);
-}
-
-/* Enhanced form animations */
-.form-control:focus {
-    transform: translateY(-1px);
-}
-
-.form-control.is-invalid {
-    animation: shake 0.5s ease-in-out;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* Photo upload enhancements */
-.photo-preview.has-image {
-    border-style: solid;
-    border-color: #10b981;
-}
-
-.photo-preview.has-image:hover {
-    transform: scale(1.05);
-}
-
-/* Checkbox styling */
-input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: #667eea;
-    cursor: pointer;
-}
-
-/* Enhanced alert animations */
-.alert {
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Textarea styling */
-.form-control[rows] {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* Enhanced button states */
-.btn:active {
-    transform: translateY(0) !important;
-}
-
-.btn-primary:disabled {
-    background: #9ca3af;
-    cursor: not-allowed;
-}
-
-/* Step connector line animation */
-.step.completed::after {
-    background: #10b981;
-    animation: fillLine 0.3s ease;
-}
-
-@keyframes fillLine {
-    from {
-        width: 0;
-    }
-    to {
-        width: 20px;
-    }
-}
-
-/* Mobile enhancements */
-@media (max-width: 576px) {
-    .form-steps {
-        gap: 10px;
-    }
-    
-    .step {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-    
-    .step span {
-        display: none;
-    }
-    
-    .step::after {
-        display: none;
-    }
-    
-    .form-header h4 {
-        font-size: 20px;
-    }
-    
-    .photo-preview {
-        width: 100px;
-        height: 100px;
-    }
-}
-
-/* Print styles */
-@media print {
-    .form-steps,
-    .progress-bar,
-    .form-actions,
-    .alert {
-        display: none !important;
-    }
-    
-    .form-section {
-        display: block !important;
-        page-break-inside: avoid;
-    }
-    
-    .form-container {
-        box-shadow: none;
-        border: 1px solid #ccc;
-    }
-}
-</style>
-`;
-
-document.head.insertAdjacentHTML('beforeend', reviewStyles);
 </script>
+@endsection

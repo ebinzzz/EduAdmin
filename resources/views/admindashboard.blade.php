@@ -709,13 +709,13 @@
                 <div class="nav-section-title">Academic</div>
                 <div class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="fas fa-class"></i>
+                        <i class="fas fa-school"></i>
                         Schools
                     </a>
                 </div>
                      <div class="nav-item">
                     <a href="{{route('class-management.index')}}" class="nav-link">
-                        <i class="fas fa-school"></i>
+                        <i class="fas fa-chalkboard-teacher"></i>
                         Classes
                     </a>
                 </div>

@@ -21,30 +21,66 @@ class ClassManagementController extends Controller
      * Display the class management dashboard
      */
     public function index(): View
-    {
-        $totalClasses = SchoolClass::where('academic_year', '2024-2025')->count();
-        $totalStudents = Student::whereHas('schoolClass', function($query) {
-            $query->where('academic_year', '2024-2025');
-        })->count();
-        $teachersAssigned = SchoolClass::where('academic_year', '2024-2025')
-            ->whereNotNull('class_teacher_id')
-            ->count();
-        $maintenanceRequired = MaintenanceRecord::where('status', 'pending')
-            ->orWhere('status', 'in_progress')
-            ->count();
+{
+    $totalClasses = SchoolClass::where('academic_year', '2024-2025')->count();
 
-        $teachers = Teacher::where('status', 'active')
-            ->orderBy('name')
-            ->get(['id', 'name']);
+    $totalStudents = Student::whereHas('schoolClass', function($query) {
+        $query->where('academic_year', '2024-2025');
+    })->count();
 
-        return view('admin.class-management.index', compact(
-            'totalClasses',
-            'totalStudents', 
-            'teachersAssigned',
-            'maintenanceRequired',
-            'teachers'
-        ));
-    }
+    $teachersAssigned = SchoolClass::where('academic_year', '2024-2025')
+        ->whereNotNull('class_teacher_id')
+        ->count();
+
+    $maintenanceRequired = MaintenanceRecord::where('status', 'pending')
+        ->orWhere('status', 'in_progress')
+        ->count();
+
+    $teachers = Teacher::where('status', 'Active')
+        ->orderBy('first_name')
+        ->get(['id', 'first_name', 'last_name']);
+
+    $classes = SchoolClass::with([
+            'classTeacher:id,first_name,last_name',
+            'students'
+        ])
+        ->withCount('students as current_student_count')
+        ->select('id', 'name', 'section', 'room_number', 'building', 'floor_number', 'academic_year', 'status', 'student_capacity', 'class_teacher_id') // Added class_teacher_id
+    //    ->where('academic_year', '2024-2025')
+        ->orderBy('name')
+        ->orderBy('section')
+        ->get()
+               ->map(function ($class) {
+            $class->grade_type = self::determineGradeType($class->name ?? '');
+            return $class;
+        });
+        
+
+    return view('admin.class.Manage', compact(
+        'totalClasses',
+        'totalStudents',
+        'teachersAssigned',
+        'maintenanceRequired',
+        'teachers',
+        'classes'
+    ));
+}
+
+
+public function showform()
+{
+    
+    $teachers = Teacher::where('status', 'Active')
+        ->orderBy('first_name')
+        ->get(['id', 'first_name', 'last_name']);
+
+    return view('admin.class.Add', compact(
+       
+        'teachers'
+     
+    ));
+}
+
 
     /**
      * Get all classes with related data
@@ -105,170 +141,147 @@ class ClassManagementController extends Controller
     /**
      * Store a new class
      */
-    public function store(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50',
-            'section' => 'required|string|max:10',
-            'class_teacher_id' => 'nullable|exists:teachers,id',
-            'student_capacity' => 'required|integer|min:1|max:100',
-            'room_number' => 'nullable|string|max:20',
-            'building' => 'nullable|string|max:100',
-            'floor_number' => 'nullable|integer|min:0|max:10',
-            'academic_year' => 'required|string|max:20',
-            'description' => 'nullable|string|max:500'
+    public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:50',
+        'section' => 'required|string|max:10',
+        'class_teacher_id' => 'nullable|exists:teachers,id',
+        'student_capacity' => 'required|integer|min:1|max:100',
+        'room_number' => 'nullable|string|max:20',
+        'building' => 'nullable|string|max:100',
+        'floor_number' => 'nullable|integer|min:0|max:10',
+        'academic_year' => 'required|string|max:20',
+        'description' => 'nullable|string|max:500'
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->route('classes.create')
+            ->withErrors($validator)
+            ->withInput();
+    }
+
+    try {
+        $existingClass = SchoolClass::where('name', $request->name)
+            ->where('section', $request->section)
+            ->where('academic_year', $request->academic_year)
+            ->first();
+
+        if ($existingClass) {
+            return redirect()->route('classes.create')
+                ->with('error', 'Class with this name and section already exists for the academic year');
+        }
+
+        if ($request->filled('class_teacher_id')) {
+            $teacherAssigned = SchoolClass::where('class_teacher_id', $request->class_teacher_id)
+                ->where('academic_year', $request->academic_year)
+                ->where('status', 'Active')
+                ->exists();
+
+            if ($teacherAssigned) {
+                return redirect()->route('classes.create')
+                    ->with('error', 'This teacher is already assigned to another class');
+            }
+        }
+
+        $class = SchoolClass::create([
+            'name' => $request->name,
+            'section' => $request->section,
+            'class_teacher_id' => $request->class_teacher_id,
+            'student_capacity' => $request->student_capacity,
+            'room_number' => $request->room_number,
+            'building' => $request->building ?: 'Main Block',
+            'floor_number' => $request->floor_number,
+            'academic_year' => $request->academic_year,
+            'description' => $request->description,
+            'status' => 'active'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+        return redirect()->route('classes.create')
+            ->with('success', 'Class created successfully');
 
-        try {
-            // Check if class already exists
-            $existingClass = SchoolClass::where('name', $request->name)
-                ->where('section', $request->section)
-                ->where('academic_year', $request->academic_year)
-                ->first();
-
-            if ($existingClass) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Class with this name and section already exists for the academic year'
-                ], 409);
-            }
-
-            // Check if teacher is already assigned to another class
-            if ($request->filled('class_teacher_id')) {
-                $teacherAssigned = SchoolClass::where('class_teacher_id', $request->class_teacher_id)
-                    ->where('academic_year', $request->academic_year)
-                    ->where('status', 'active')
-                    ->exists();
-
-                if ($teacherAssigned) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'This teacher is already assigned to another class'
-                    ], 409);
-                }
-            }
-
-            $class = SchoolClass::create([
-                'name' => $request->name,
-                'section' => $request->section,
-                'class_teacher_id' => $request->class_teacher_id,
-                'student_capacity' => $request->student_capacity,
-                'room_number' => $request->room_number,
-                'building' => $request->building ?: 'Main Block',
-                'floor_number' => $request->floor_number,
-                'academic_year' => $request->academic_year,
-                'description' => $request->description,
-                'status' => 'active'
-            ]);
-
-            $class->load('classTeacher:id,name');
-            $class->display_name = $class->name . ' - ' . $class->section;
-            $class->grade_type = $this->determineGradeType($class->name);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Class created successfully',
-                'class' => $class
-            ], 201);
-
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create class',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+    } catch (Exception $e) {
+        return redirect()->route('classes.create')
+            ->with('error', 'Failed to create class: ' . $e->getMessage());
     }
+}
 
     /**
      * Update a class
      */
-    public function update(Request $request, $id): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50',
-            'section' => 'required|string|max:10',
-            'class_teacher_id' => 'nullable|exists:teachers,id',
-            'student_capacity' => 'required|integer|min:1|max:100',
-            'room_number' => 'nullable|string|max:20',
-            'building' => 'nullable|string|max:100',
-            'floor_number' => 'nullable|integer|min:0|max:10',
-            'description' => 'nullable|string|max:500',
-            'status' => 'in:active,inactive'
-        ]);
+public function update(Request $request, $id)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:50',
+        'section' => 'required|string|max:10',
+        'class_teacher_id' => 'nullable|exists:teachers,id',
+        'student_capacity' => 'required|integer|min:1|max:100',
+        'room_number' => 'nullable|string|max:20',
+        'building' => 'nullable|string|max:100',
+        'floor_number' => 'nullable|integer|min:0|max:10',
+        'description' => 'nullable|string|max:500',
+        'status' => 'in:active,inactive'
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        try {
-            $class = SchoolClass::findOrFail($id);
-
-            // Check if class name/section combination already exists (excluding current class)
-            $existingClass = SchoolClass::where('name', $request->name)
-                ->where('section', $request->section)
-                ->where('academic_year', $class->academic_year)
-                ->where('id', '!=', $id)
-                ->first();
-
-            if ($existingClass) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Class with this name and section already exists'
-                ], 409);
-            }
-
-            // Check if teacher is already assigned to another class
-            if ($request->filled('class_teacher_id') && $request->class_teacher_id != $class->class_teacher_id) {
-                $teacherAssigned = SchoolClass::where('class_teacher_id', $request->class_teacher_id)
-                    ->where('academic_year', $class->academic_year)
-                    ->where('status', 'active')
-                    ->where('id', '!=', $id)
-                    ->exists();
-
-                if ($teacherAssigned) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'This teacher is already assigned to another class'
-                    ], 409);
-                }
-            }
-
-            $class->update($request->only([
-                'name', 'section', 'class_teacher_id', 'student_capacity',
-                'room_number', 'building', 'floor_number', 'description', 'status'
-            ]));
-
-            $class->load('classTeacher:id,name');
-            $class->display_name = $class->name . ' - ' . $class->section;
-            $class->grade_type = $this->determineGradeType($class->name);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Class updated successfully',
-                'class' => $class
-            ]);
-
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update class',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+    if ($validator->fails()) {
+        return redirect()->route('classes.edit', $id)
+                         ->withErrors($validator)
+                         ->withInput()
+                         ->with('error', 'Validation failed');
     }
+
+    try {
+        $class = SchoolClass::findOrFail($id);
+
+        $existingClass = SchoolClass::where('name', $request->name)
+            ->where('section', $request->section)
+            ->where('academic_year', $class->academic_year)
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($existingClass) {
+            return redirect()->route('classes.edit', $id)
+                             ->with('error', 'Class with this name and section already exists');
+        }
+
+        if ($request->filled('class_teacher_id') && $request->class_teacher_id != $class->class_teacher_id) {
+            $teacherAssigned = SchoolClass::where('class_teacher_id', $request->class_teacher_id)
+                ->where('academic_year', $class->academic_year)
+                ->where('status', 'active')
+                ->where('id', '!=', $id)
+                ->exists();
+
+            if ($teacherAssigned) {
+                return redirect()->route('classes.edit', $id)
+                                 ->with('error', 'This teacher is already assigned to another class');
+            }
+        }
+
+        $class->update($request->only([
+            'name', 'section', 'class_teacher_id', 'student_capacity',
+            'room_number', 'building', 'floor_number', 'description', 'status'
+        ]));
+
+        return redirect()->route('classes.edit', $id)
+                         ->with('success', 'Class updated successfully');
+
+    } catch (Exception $e) {
+        return redirect()->route('classes.edit', $id)
+                         ->with('error', 'Failed to update class: ' . $e->getMessage());
+    }
+}
+
+
+
+/*edit */
+public function edit($id)
+{
+    $class = SchoolClass::findOrFail($id);
+    $teachers = Teacher::all(); // or however you fetch them
+
+    return view('admin.class.edit', compact('class', 'teachers'));
+}
+
 
     /**
      * Delete a class

@@ -35,7 +35,6 @@ class DashboardController extends Controller
         if (!Auth::check()) {
             return redirect('/login');
         }
-        
         $user = Auth::user();
         
         // Check if user has admin access

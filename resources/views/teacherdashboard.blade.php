@@ -17,8 +17,8 @@
 
 /* Viewport meta tag for proper mobile scaling */
 html {
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 90%;
+    -ms-text-size-adjust: 90%;
 }
 
 /* Flexible container system */
@@ -26,9 +26,10 @@ html {
 .container-fluid, 
 .main-content,
 .content-wrapper {
-    max-width: 100% !important;
-    width: 100% !important;
+ 
+    width: 80% !important;
     margin: 0 !important;
+    margin-left:5%;
     padding-left: clamp(10px, 2vw, 20px) !important;
     padding-right: clamp(10px, 2vw, 20px) !important;
 }
