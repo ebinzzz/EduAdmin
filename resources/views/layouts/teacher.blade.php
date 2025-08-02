@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'EduManage')</title>
+    <title>@yield('title', 'EduManage - Teacher Portal')</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
     <style>
         * {
             margin: 0;
@@ -28,7 +27,7 @@
             top: 0;
             width: 280px;
             height: 100vh;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
             color: white;
             z-index: 1000;
             transition: transform 0.3s ease;
@@ -60,6 +59,7 @@
             opacity: 0.8;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: #68d391;
         }
 
         .sidebar-nav {
@@ -95,8 +95,8 @@
 
         .nav-link:hover,
         .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            background: rgba(104, 211, 145, 0.1);
+            color: #68d391;
             transform: translateX(5px);
         }
 
@@ -107,7 +107,7 @@
             top: 0;
             bottom: 0;
             width: 4px;
-            background: #ffffff;
+            background: #68d391;
         }
 
         .nav-link i {
@@ -118,7 +118,8 @@
 
         .nav-link .badge {
             margin-left: auto;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(104, 211, 145, 0.3);
+            color: #68d391;
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 11px;
@@ -254,7 +255,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #68d391, #48bb78);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -336,57 +337,49 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
+                <i class="fas fa-chalkboard-teacher"></i>
                 EduManage
             </div>
-            <div class="tagline">Super Admin Panel</div>
+            <div class="tagline">Teacher Portal</div>
         </div>
 
         <nav class="sidebar-nav">
             <div class="nav-section">
                 <div class="nav-section-title">Main</div>
                 <div class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('teacher.dashboard') }}" class="nav-link {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}">
                         <i class="fas fa-tachometer-alt"></i>
                         Dashboard
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('analytics') ? 'active' : '' }}">
-                        <i class="fas fa-chart-line"></i>
-                        Analytics
+                    <a href="{{ route('teacher.profile') }}" class="nav-link {{ request()->routeIs('teacher.profile') ? 'active' : '' }}">
+                        <i class="fas fa-user"></i>
+                        My Profile
                     </a>
                 </div>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">User Management</div>
+                <div class="nav-section-title">Classes & Students</div>
                 <div class="nav-item">
-                    <a href="{{ route('studentmanage') }}" class="nav-link ">
+                    <a href="{{ route('teacher.classes') }}" class="nav-link {{ request()->routeIs('teacher.classes*') ? 'active' : '' }}">
+                        <i class="fas fa-school"></i>
+                        My Classes
+                        <span class="badge">5</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ route('teacher.students') }}" class="nav-link {{ request()->routeIs('teacher.students*') ? 'active' : '' }}">
                         <i class="fas fa-user-graduate"></i>
                         Students
-                        <span class="badge">1,247</span>
+                        <span class="badge">127</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="{{ route('teachermanage') }}" class="nav-link ">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        Teachers
-                        <span class="badge">89</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('staff.*') ? 'active' : '' }}">
-                        <i class="fas fa-user-tie"></i>
-                        Staff
-                        <span class="badge">45</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('admins.*') ? 'active' : '' }}">
-                        <i class="fas fa-user-shield"></i>
-                        Admins
-                        <span class="badge">12</span>
+                    <a href="{{ route('teacher.attendance') }}" class="nav-link {{ request()->routeIs('teacher.attendance*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i>
+                        Attendance
                     </a>
                 </div>
             </div>
@@ -394,59 +387,71 @@
             <div class="nav-section">
                 <div class="nav-section-title">Academic</div>
                 <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('schools.*') ? 'active' : '' }}">
-                        <i class="fas fa-school"></i>
-                        Schools
-                    </a>
-                </div>
-                 <div class="nav-item">
-                         <a href="{{route('class-management.index')}}" class="nav-link">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        Classes
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('courses.*') ? 'active' : '' }}">
-                        <i class="fas fa-book"></i>
-                        Courses
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('schedule.*') ? 'active' : '' }}">
+                    <a href="{{ route('teacher.timetable') }}" class="nav-link {{ request()->routeIs('teacher.timetable*') ? 'active' : '' }}">
                         <i class="fas fa-calendar-alt"></i>
-                        Schedule
+                        Timetable
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('examinations.*') ? 'active' : '' }}">
-                        <i class="fas fa-graduation-cap"></i>
-                        Examinations
+                    <a href="{{ route('teacher.assignments') }}" class="nav-link {{ request()->routeIs('teacher.assignments*') ? 'active' : '' }}">
+                        <i class="fas fa-tasks"></i>
+                        Assignments
+                        <span class="badge">8</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ route('teacher.exams') }}" class="nav-link {{ request()->routeIs('teacher.exams*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i>
+                        Exams & Tests
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ route('teacher.grades') }}" class="nav-link {{ request()->routeIs('teacher.grades*') ? 'active' : '' }}">
+                        <i class="fas fa-chart-bar"></i>
+                        Grades & Results
                     </a>
                 </div>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">System</div>
+                <div class="nav-section-title">Communication</div>
                 <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
-                        <i class="fas fa-cog"></i>
-                        Settings
+                    <a href="{{ route('teacher.messages') }}" class="nav-link {{ request()->routeIs('teacher.messages*') ? 'active' : '' }}">
+                        <i class="fas fa-envelope"></i>
+                        Messages
+                        <span class="badge">3</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('security.*') ? 'active' : '' }}">
-                        <i class="fas fa-shield-alt"></i>
-                        Security
+                    <a href="{{ route('teacher.announcements') }}" class="nav-link {{ request()->routeIs('teacher.announcements*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i>
+                        Announcements
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                    <a href="{{ route('teacher.parents') }}" class="nav-link {{ request()->routeIs('teacher.parents*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i>
+                        Parent Communication
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Resources</div>
+                <div class="nav-item">
+                    <a href="{{ route('teacher.resources') }}" class="nav-link {{ request()->routeIs('teacher.resources*') ? 'active' : '' }}">
+                        <i class="fas fa-book"></i>
+                        Teaching Resources
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ route('teacher.reports') }}" class="nav-link {{ request()->routeIs('teacher.reports*') ? 'active' : '' }}">
                         <i class="fas fa-file-alt"></i>
                         Reports
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="" class="nav-link {{ request()->routeIs('support.*') ? 'active' : '' }}">
+                    <a href="{{ route('teacher.help') }}" class="nav-link {{ request()->routeIs('teacher.help*') ? 'active' : '' }}">
                         <i class="fas fa-question-circle"></i>
                         Help & Support
                     </a>
@@ -464,8 +469,8 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <div>
-                  <h1 class="page-title">@yield('page_title', 'Dashboard')</h1>
-<div class="breadcrumb">@yield('breadcrumb', 'Home')</div>
+                    <h1 class="page-title">@yield('page-title', 'Dashboard')</h1>
+                    <div class="breadcrumb">@yield('breadcrumb', 'Home')</div>
                 </div>
             </div>
 
@@ -478,19 +483,19 @@
                 <div class="header-icons">
                     <div class="header-icon">
                         <i class="fas fa-bell"></i>
-                        <span class="badge">3</span>
+                        <span class="badge">5</span>
                     </div>
                     <div class="header-icon">
                         <i class="fas fa-envelope"></i>
-                        <span class="badge">7</span>
+                        <span class="badge">3</span>
                     </div>
                 </div>
 
                 <div class="user-profile">
-                    <div class="user-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'SA', 0, 2)) }}</div>
+                    <div class="user-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'TC', 0, 2)) }}</div>
                     <div class="user-info">
-                        <h4>{{ Auth::user()->name ?? 'Super Admin' }}</h4>
-                        <p>{{ Auth::user()->email ?? 'admin@edumanage.com' }}</p>
+                        <h4>{{ Auth::user()->name ?? 'Teacher Name' }}</h4>
+                        <p>{{ Auth::user()->email ?? 'teacher@edumanage.com' }}</p>
                     </div>
                     <i class="fas fa-chevron-down"></i>
                 </div>
